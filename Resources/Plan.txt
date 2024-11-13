@@ -1,0 +1,74 @@
+Plan
+
+Make PlayerDamageRoll function for each of the enemies
+make a if statement for if the player has a shield they take less damage.
+
+make isplayerdead function
+
+Make encounter chance roll function 
+if the enemyencounter rolls positive roll the enemy encounter roll.
+
+Make EncounterEnemyRoll function
+
+make enemies:
+Skeleton
+Zombie
+Reaper
+Wizard
+Mini-boss
+
+Make Shop Function?
+	if so make enemies drop fixed amounts of gold
+	weapons and health upgrades can be bought with gold
+	
+Make Alternate endings
+	If Player Kills Over lets say 50 enemies through their playthrough then they get say the bad ending
+	scratch that its based on the amount of turns you take if you take a majority of straight left or right turns out of 20 you get a good or bad ending
+have  Narrator
+Narrator - Nick
+
+Add videos That Open During Certain Scenes.
+-Falling through floor
+
+Make rooms that act as an encounter that give you a certain item.
+
+make everything (almost) randomized
+
+make every enemy have their own damage function
+
+make every enemy have their own fight function
+enemy attacks player
+	call isplayerdead function
+		if player is dead and player has 1 or more health potion 
+			ask if they want to revive
+				if yes remove 1 potion
+				else kill player
+		else if player is dead with no potions
+			kill player and close game
+
+make a Grand (	Gold Random ) function where if you get a room with no encounter it will roll a random number of gold 
+
+encounters:
+Mini-boss
+Loot Room
+Reaper
+Shop
+Zombie
+Wizard
+Skeleton
+
+Enemies Damage is random between 1 - blank
+	wizards are glass cannons
+
+create the Main function
+	create a switch case statement
+		if user presses 1 start game 2 exit game 3 meme 4 skip intro
+	create intro to game
+	after intro create a tutorial room where you cant roll a shop or a mini-boss but you can roll every other encounter
+	create a for loop
+		keep rolling rooms until user hits a total of 20 turns 
+			after user hits 20 turns end loop
+	create a ending for if the user gets a higher number of turns than say left or right turns
+		ending goes to the games files under the misc category
+	restart game
+

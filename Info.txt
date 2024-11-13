@@ -1,0 +1,3 @@
+there is 1612 Lines of code and 48286 characters
+press 3 to skip intro
+there are 20 functions 
