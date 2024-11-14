@@ -35,6 +35,18 @@ struct Item inventory[] = {
     {"Gold", 10} // ^ Starting Gold Amount
 };
 
+// ^ Struct to measure the amount of turns made
+struct Turn {
+    char turnType[50];
+    int turnNum;
+};
+
+struct Turn playerTurns[] = {
+    {"noTurns", 0},
+    {"leftTurns", 0},
+    {"rightTurns", 0}
+};
+
 // ^ Initialize PlayerMaxHealth and PlayerHealth to basePlayerHealth
 int playerMaxHealth = basePlayerHealth, playerHealth = basePlayerHealth;
 
@@ -43,6 +55,10 @@ int randomNumberGen(int maxNum)
 {
     return rand() % maxNum + 1;
 }
+
+void LEnding(char* Name);
+void REnding(char* Name);
+void NoEnding(char* Name);
 
 char* playIntro()
 {
@@ -192,7 +208,7 @@ void gameStart(FILE *fptr, char* name)
 // ! Enemy Fight
 void enemyFight(int enemyHealth, int enemyDamageCap, char* enemyName)
 {
-    boolean hasPlayerRun = false;
+    bool hasPlayerRun = false;
     // TODO - add audio here
     system("cls");
     printf("A %s Has Appeared!\n", enemyName);
@@ -323,7 +339,7 @@ void lootRoom()
     system("cls");
     char prompt[200];
     int promptType;
-    boolean finished = false;
+    bool finished = false;
     if(inventory[1].amount == 0)
     {
         strcpy(prompt, "[1] You Found A Sword\n");
@@ -471,58 +487,336 @@ void goShopping()
 }
 
 // ^ Actual Gameplay
-void gameplay(struct Item *inventory)
+void gameplay(struct Item *inventory, FILE *fptr, char* name)
 {
-    //* Triggers an encounter + allows me to change the encounter rate
-    if(randomNumberGen(11) <= 10)
+     // !! CHANGE THIS IF YOU WANT A LONGER  {VV}/SHORTER EXPERIENCE
+    for(int TotalTurns = 0;TotalTurns <= 20; TotalTurns++)
     {
-        int chance = randomNumberGen(10);
-        switch (chance)
+        playerHealth = playerMaxHealth;
+        //* Triggers an encounter + allows me to change the encounter rate
+        if(randomNumberGen(11) <= 10)
         {
-        case 1:
-            // & no enemy
+            int chance = randomNumberGen(10);
+            switch (chance)
+            {
+            case 1:
+                // & no enemy
+                int goldAmt = randomNumberGen(12);
+                printf("You Got Lucky!\n Although Noises Were Coming From This Room Nothing Is Here\n +%d Gold\n", goldAmt);
+                inventory[4].amount += goldAmt;
+                system("pause && cls");
+                break;
+            case 2:
+                // & Skeleton Encounter
+                enemyFight(SkellyHealth, 52, "Skeleton");
+                system("cls");
+                break;
+            case 3:
+                // & Wizard Encounter
+                enemyFight(WizardHealth, 65, "Wizard");
+                system("cls");
+                break;
+            case 4:
+                // & Shop Encounter
+                goShopping();
+                system("cls");
+                break;
+            case 5:
+                // & Reaper Encounter
+                enemyFight(ReaperHealth, 47, "Reaper");
+                system("cls");
+                break;
+            case 6:
+                // & Loot Room Encounter
+                lootRoom();
+                system("cls");
+                break; 
+            case 7:
+                // & Zombie Encounter
+                enemyFight(ZomboHealth, 44, "Zombie");
+                system("cls");
+                break;
+            case 8:
+                if (TotalTurns <= 5)
+                {
+                    // & Zombie Encounter
+                    enemyFight(ZomboHealth, 24, "Zombie");
+                }
+                else
+                {
+                    // & MiniBoss Encounter
+                    enemyFight(MiniBossHealth, 30, "MiniBoss");
+                    system("cls");  
+                }
+                break;
+            default:
+                break;
+            }
+        }
+        // * Player dodges an encounter
+        else
+        {
+            //rolled false encounter
             int goldAmt = randomNumberGen(12);
-            printf("You Got Lucky!\n Although Noises Were Coming From This Room Nothing Is Here\n +%d Gold\n", goldAmt);
-            inventory[4].amount += goldAmt;
+            printf("You Found A Pouch Of Gold\nIt Has %i Gold\n", goldAmt);
             system("pause && cls");
-            break;
-        case 2:
-            // & Skeleton Encounter
-            enemyFight(SkellyHealth, 15, "Skeleton");
-            break;
-        case 3:
-            // & Wizard Encounter
-            enemyFight(WizardHealth, 20, "Wizard");
-            break;
-        case 4:
-            // & Shop Encounter
-            break;
-        case 5:
-            // & Reaper Encounter
-            enemyFight(ReaperHealth, 25, "Reaper");
-            break;
-        case 6:
-            // & Loot Room Encounter
-            lootRoom();
-            break; 
-        case 7:
-            // & Zombie Encounter
-            enemyFight(ZomboHealth, 10, "Zombie");
-            break;
-        case 8:
-            // & MiniBoss Encounter
-            enemyFight(MiniBossHealth, 30, "MiniBoss");
-            break;
-        default:
-            break;
+            inventory[4].amount += goldAmt;
+            printf("You Have %i Gold.\n", inventory[4].amount);
+            system("pause && cls");
+        }
+        // & if its the first encounter write up some lore
+        if(TotalTurns == 0)
+        {
+            fptr = fopen("Misc\\Page 2.txt", "w");
+            fprintf(fptr, "When %s Entered The First Room They Realized How Little Was In It,\nThe Room Had Almost No Loot, Skeletons Chained To The Walls,\nAnd By Nothing I(The Narrator) Mean Almost No Spiders\nIN A UNDERGROUND DUNGEON!?!?\n\nPage 2", name);
+            fclose(fptr);
+        }
+        char choice;
+        switch(randomNumberGen(7))
+        {
+            case 1:
+                // & straight
+                    printf("There Is Only One Path Out Of This Room.\n");
+                    system("pause && cls");
+                    printf("You Go Straight\n");
+                    system("pause && cls");
+                    playerTurns[0].turnNum++;
+                break;
+            case 2:
+                // & left
+                    printf("There Is Only One Path Out Of This Room.\n");
+                    system("pause && cls");
+                    printf("You Go Left\n");
+                    system("pause && cls");
+                    playerTurns[1].turnNum++;
+                break;
+            case 3:
+                // & right
+                    printf("There Is Only One Path Out Of This Room.\n");
+                    system("pause && cls");
+                    printf("You Go Right\n");
+                    system("pause && cls");
+                    playerTurns[2].turnNum++;
+                break;
+            case 4:
+                //& left straight
+                    printf("There Are 2 Paths Out Of This Room\n (L/S)\n");
+                    choice = tolower(scanf(" %c", &choice));
+                    system("cls");
+                    switch(choice)
+                    {
+                        case 'l':
+                        {
+                            playerTurns[1].turnNum ++;
+                        }
+                        case 's':
+                        {
+                            playerTurns[0].turnNum ++;
+                        }
+                    }
+                break;
+            case 5:
+                //& right straight
+                    printf("There Are 2 Paths Out Of This Room\n (R/S)\n");
+                    choice = tolower(scanf(" %c", &choice));
+                    system("cls");
+                    switch(choice)
+                    {
+                        case 'r':
+                        {
+                            playerTurns[2].turnNum ++;
+                        }
+                        case 's':
+                        {
+                            playerTurns[0].turnNum ++;
+                        }
+                    }
+                break;
+            case 6:
+                //& left right
+                    printf("There Are 2 Paths Out Of This Room\n (L/R)\n");
+                    choice = tolower(scanf(" %c", &choice));
+                    system("cls");
+                    switch(choice)
+                    {
+                        case 'l':
+                        {
+                            playerTurns[1].turnNum ++;
+                        }
+                        case 'r':
+                        {
+                            playerTurns[2].turnNum ++;
+                        }
+                    }
+                break;
+            case 7:
+                //& left right straight
+                    printf("There Are 3 Paths Out Of This Room\n (L/R/S)\n");
+                    choice = tolower(scanf(" %c", &choice));
+                    system("cls");
+                    switch(choice)
+                    {
+                        case 'l':
+                        {
+                            playerTurns[1].turnNum ++;
+                        }
+                        case 'r':
+                        {
+                            playerTurns[2].turnNum ++;
+                        }
+                        case 's':
+                        {
+                            playerTurns[0].turnNum ++;
+                        }
+                    }
+                break;
         }
     }
-    // * Player dodges an encounter
-    else
-    {}
-    
+    //!! PRE-Bossfight section
+    int casino();
+    goShopping();
+    //!! Bossfight section
+    char* bossNames[] = {
+        "The Great Wizard", "The Reaper", "The Skeleton King", "The Dark Sorcerer", 
+        "The Undead Knight", "The Cursed Pharaoh", "The Fallen Angel", "The Demon Lord", 
+        "The Shadow Assassin", "The Ancient Dragon", "The Lich King", "The Vampire Lord", 
+        "The Warlock", "The Necromancer", "The Dark Paladin", "The Infernal Beast", 
+        "The Ghostly Wraith", "The Bloodthirsty Beast", "The Soul Reaper", "The Death Bringer"
+    };
+    char* bossName = bossNames[randomNumberGen(20) - 1];
+    enemyFight(BossHealth, 88, bossName);
+    if(playerTurns[1].turnNum > playerTurns[2].turnNum && playerTurns[1].turnNum > playerTurns[0].turnNum)
+            {
+                LEnding(name);
+            }
+            else if(playerTurns[2].turnNum > playerTurns[1].turnNum && playerTurns[2].turnNum > playerTurns[0].turnNum)
+            {
+                REnding(name);
+            }
+            else if(playerTurns[0].turnNum > playerTurns[1].turnNum && playerTurns[0].turnNum > playerTurns[1].turnNum)
+            {
+                NoEnding(name);
+            }
+            else if(playerTurns[0].turnNum == playerTurns[1].turnNum && playerTurns[0].turnNum == playerTurns[2].turnNum)
+            {
+                system("cls");
+                printf("You're Lost Forever\n");
+                system("pause && cls");
+            }
 }
 
+//& GAME ENDINGS
+void LEnding(char* Name)
+{
+    FILE *fptr;
+    system("cls");
+    printf("After All Those Left Turns You Finally Left The Dungeon And Ended Up In A Even Worse Place...\n The Attic.");
+    system("pause");
+    fptr = fopen("Misc\\Page 3.txt", "w");
+    fprintf(fptr,"Well Now You Are Stuck In The Attic With No Way Out.\n\nTO BE CONTINUED.");
+    fclose(fptr);
+    //TODO - add audio here
+    system("cls");
+}
+void REnding(char* Name)
+{
+    FILE *fptr;
+    printf("You Took The Right Path To Freedom Or Rather Your Freedom\nYou Enslaved The Entire Dungeons Population");
+    system("pause");
+    fptr = fopen("Misc\\Page 4.txt", "w");
+    fprintf(fptr,"All Hail Our Ruler!\n\nTO BE CONTINUED.");
+    fclose(fptr);
+    //TODO - add audio here
+    system("cls");
+}
+void NoEnding(char* Name)
+{
+    FILE *fptr;
+    printf("You Died Alone In The Dungeon Under A Boulder.");
+    system("pause");
+    fptr = fopen("Misc\\Page 5.txt", "w");
+    fprintf(fptr,"Day 64-\nIm Stuck Down Here I Cant Find My Way Out And Im Scared\nPlease Send Help\nI've Got To Run Before They Catc-");
+    fclose(fptr);
+    //TODO - add audio here
+    system("cls");
+}
+
+// ! Casino
+int casino()
+{
+    while(true)
+    {
+        int totalGamble = 0;
+        printf("%iG <-- Your Gold\n\nWelcome To The Casino\n\n\n[1]Gamble ------- 10G\n\n[2]Gamble ------- 20G\n\n[3]Gamble ------- 30G\n\n[4] Custom Gamble\n\n[5] EXIT\n\nJACKPOT IS 100 GOLD", inventory[4].amount);
+        int choice = scanf(" %i", &choice);
+        system("cls");
+        if(choice == 1 && inventory[4].amount >= 10) {totalGamble = 10;}
+        else if(choice == 2 && inventory[4].amount >= 20) {totalGamble = 20;}
+        else if(choice == 3 && inventory[4].amount >= 30) {totalGamble = 30;}
+        else if(choice == 4)
+        {
+            while(true)
+            {
+                printf("%iG\n\nHow Much Are You Gambling?\n", inventory[4].amount);
+                scanf("%i", &totalGamble);
+                if(totalGamble <= inventory[4].amount)
+                {
+                    system("cls");
+                    break;
+                }
+                else
+                {
+                printf("You Cannot Enter That Much!\n");
+                system("pause && cls");
+                }
+            }
+        }
+        else if(choice == 5) {return 0;}
+        else
+        {
+            printf("Invalid Choice!\n");
+            system("pause && cls");
+        }
+        inventory[4].amount -= totalGamble;
+        int num1 = randomNumberGen(10);
+        printf("%i ",num1);
+        Sleep(1000);
+        int num2 = randomNumberGen(10);
+        printf("%i ",num2);
+        Sleep(3000);
+        int num3 = randomNumberGen(10);
+        printf("%i",num3);
+
+        if(num1 == num2 && num2 != num3||num2 == num3 && num3 != num1||num3 == num1 && num1 != num2)
+        {
+            totalGamble *= 1.5;
+            printf("\nYou Got %i Back\n", totalGamble);
+            system("pause && cls");
+            inventory[4].amount += totalGamble;
+        }
+        else if(num1 == 10 && num2 == 10 && num3 == 10)
+        {
+            totalGamble *= 100;
+            printf("\nYOU GOT THE JACKPOT");
+            printf("\nYou Got %i Back\n", totalGamble);
+            system("pause && cls");
+            inventory[4].amount += totalGamble;
+        }
+        else if(num1 == num2 && num2 == num3)
+        {
+            totalGamble *= 2;
+            printf("\nYou Got %i Back\n", totalGamble);
+            system("pause && cls");
+            inventory[4].amount += totalGamble;
+        }
+        else
+        {
+            printf("Well GoodBye To All That Gold");
+            system("pause && cls");
+        }
+    }
+    return 0;
+}
 
 
 // ^ Main function
@@ -544,24 +838,25 @@ int main()
         printf("|      The BrokenCrypt        |\n");
         printf("|                             |\n");
         printf("\\-----------------------------/\n");
-        printf("\n\t[1] Play \n\t\n\t[2] Quit\n\n\t[3] Skip Intro\n");//PLAYER CAN HIT 3 TO HERE A JOKE I ADDED || HIT 4 TO SKIP THE WHOLE INTRO SEQUENCE
+        printf("\n\t[1] Play \n\t\n\t[2] Quit\n\n\t[3] Skip Intro\n");
         // * Take in user input
         choice = getche();
         system("cls");
-
+        char* name = NULL;
         // ^ Switch to user choice
         switch(choice)
         {
             case '1': // ^ Start the game
-                char* name = playIntro();
+                name = playIntro();
                 gameStart(fptr, name);
-                
+                gameplay(inventory, fptr, name);
                 break;
             case '2': // ^ Quit the game
                 exit(0);
                 break;
             case '3': // ^ Skip the intro
-            
+                name = "Player";
+                gameplay(inventory, fptr, name);
                 break;
             default:
                 // ^ Invalid choice
