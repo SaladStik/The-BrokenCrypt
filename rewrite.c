@@ -26,6 +26,15 @@ struct Item {
     int amount;
 };
 
+// * init the players inventory
+struct Item inventory[] = {
+    {"Health Potion", 3}, 
+    {"Sword", 0},
+    {"Knife", 0},
+    {"Shield", 0},
+    {"Gold", 10} // ^ Starting Gold Amount
+};
+
 // ^ Initialize PlayerMaxHealth and PlayerHealth to basePlayerHealth
 int playerMaxHealth = basePlayerHealth, playerHealth = basePlayerHealth;
 
@@ -55,7 +64,7 @@ char* playIntro()
     printf("Welcome T▒ Our W▒n▒erf▒l Wor▒d Of BrokenLane %s\n", name);
     system("pause && cls");
     // TODO- add audio here
-    Sleep(3);
+    Sleep(3000);
     //TODO - add audio here
     printf("Phew. Who Would Have Thought A Bullet Wound To That Annoying Pricks Head Would Be So Gross?\nAnyway Now That Your Here Lets Begin.\n");
     system("pause && cls");
@@ -63,34 +72,34 @@ char* playIntro()
     Sleep(2.5);
     system("pause && cls");
     //TODO - add audio here
-    Sleep(4);
+    Sleep(4000);
     printf("\n\n\t\tA No Name Studios Game");
-    Sleep(4);
+    Sleep(4000);
     system("cls");
     printf("\n\n\t\tPublished By WHY IS THIS IN MY ATTIC?");
-    Sleep(4);
+    Sleep(4000);
     system("cls");
     printf("\n\n\t\tIn Collaboration With Da Baby");
-    Sleep(4);
+    Sleep(4000);
     system("cls");
     printf("\n\n\t\tMADE IN THE UNITY ENGINE");
-    Sleep(4);
+    Sleep(4000);
     system("cls");
     printf("\n\n\t\tA Royalty Filled Game\n\n\tYeah No Revenue Was Made Here B^)");
-    Sleep(4);
+    Sleep(4000);
     system("cls");
     printf("\n\n\t\tDeveloped By Nick");
-    Sleep(4);
+    Sleep(4000);
     system("cls");
     printf("\n\n\t\tALL RIGHTS RESERVED");
-    Sleep(4);
+    Sleep(4000);
     system("cls");
     printf("\n\n\t\tThe BrokenCrypt");
     Sleep(8);
     system("cls");
     system("cls");
     // TODO - Add audio here
-    Sleep(20);
+    Sleep(20000);
     printf("           ^\n");
     printf("          | |\n");
     printf("          | |\n");
@@ -100,7 +109,7 @@ char* playIntro()
     printf("           |\n");
     printf("           0\n");
     printf("Item Gained.");
-    Sleep(4);
+    Sleep(4000);
     system("cls");
     return name;
 }
@@ -110,7 +119,7 @@ void gameStart(FILE *fptr, char* name)
     printf("Hey %s Wake Up!\n\t\t\n", name);
     system("pause && cls");
     printf("I guess it was all just a dream....");
-    Sleep(1);
+    Sleep(1000);
     printf("\nWell since im up I might aswell go get some breakfast.\n");
     printf("|-------------------------|\n");
     printf("|  /-/               *  0 | \n");
@@ -120,7 +129,7 @@ void gameStart(FILE *fptr, char* name)
     system("pause && cls");
     printf("*You Walk Downstairs*\n");
     //TODO - add audio here
-    Sleep(10);
+    Sleep(10000);
     system("cls");
     printf("*You Smell Pancakes*\n");
     system("pause && cls");
@@ -145,7 +154,7 @@ void gameStart(FILE *fptr, char* name)
     // * File writing
     fptr = fopen("Misc\\Page 1.txt", "w");
     printf("Do You Deserve This?\n");
-    Sleep(3);
+    Sleep(3000);
     system("cls");
     fprintf(fptr, "When %s Fell They Began To Realize The Amount Of Bad Things They Had Done\nHad They Really Deserved This?\nMaybe This Was The Best Thing For Them\nAfter All", name);
     system("pause");
@@ -158,14 +167,14 @@ void gameStart(FILE *fptr, char* name)
     //TODO - add audio here
     system("pause && cls");
     //TODO - add audio here
-    Sleep(2);
+    Sleep(2000);
     printf("%s Found Themself At A Stone Gate Deep Underground With A Sign OverHead That Read '▒▒▒▒▒' \nUnderneath A Sign In English Read 'The BrokenCrypt\n\n", name);
     printf("/-----------------------------\\\n");
     printf("|                             |\n");
     printf("|       The BrokenCrypt       |\n");
     printf("|                             |\n");
     printf("\\-----------------------------/\n");
-    Sleep(2);
+    Sleep(2000);
     system("pause && cls");
     printf("You Decide To Enter");
     //TODO - add audio here
@@ -180,13 +189,175 @@ void gameStart(FILE *fptr, char* name)
     // * end of intro
 }
 
+// ! Enemy Fight
+void enemyFight(int enemyHealth, int enemyDamageCap, char* enemyName)
+{
+    boolean hasPlayerRun = false;
+    // TODO - add audio here
+    system("cls");
+    printf("A %s Has Appeared!\n", enemyName);
+    system("pause && cls");
+    
+    do
+    {
+        printf("The %s Is Attacking!\n", enemyName);
+        system("pause && cls");
+        // * Enemy Damage
+        int damageTaken = randomNumberGen(enemyDamageCap);
+        if (inventory[3].amount == 1) {
+            damageTaken /= 2;
+        }
+        playerHealth -= damageTaken;
+        printf("You Took %d Damage!\nYou Now Have %d Health!\n", damageTaken, playerHealth);
+        system("pause && cls");
+        // * Check if player is dead
+        if(playerHealth <= 0)
+        {
+            if (playerHealth < 0)
+                playerHealth = 0;
+            
+            printf("You Have %d Out Of %d Health!!!\n", playerHealth, playerMaxHealth);
+            system("pause && cls");
+            // * Revive function
+            if(inventory[0].amount >= 1)
+            {
+                printf("You Have %d\n Use 1?\n(Y/N)\n", inventory[0].amount);
+                char potUse;
+                scanf(" %c", &potUse);
+                if(tolower(potUse) == 'y')
+                {
+                    inventory[0].amount--;
+                    playerHealth = playerMaxHealth;
+                }
+                else
+                {
+                    printf("You Died!\n");
+                    system("pause && cls");
+                    exit(0);
+                }
+            }
+            else
+            {
+                printf("You Died!\n");
+                system("pause && cls");
+                exit(0);
+            }
+        }
+        // * Player action
+        action:;
+        system("cls");
+        printf("[1]Attack!\n[2]Heal! %d Remaining\n[3]Run Away You Coward!\nYour Health %d\n Their Health %d\n\n", inventory[0].amount, playerHealth, enemyHealth);
+        int choice;
+        scanf(" %d", &choice);
+        system("cls");
+        switch (choice)
+        {
+        case 1:
+            // * Player Attack
+            int pDamage;
+            if(inventory[1].amount == 1)
+            {
+                pDamage = randomNumberGen(30);
+                if (pDamage < 10)
+                    pDamage = 10;
+            }
+            else
+            {
+                pDamage = 10;
+            }
+            enemyHealth -= pDamage;
+            printf("You Dealt %d Damage\n%s Now Has %i Health\n",pDamage,enemyName, enemyHealth);
+            system("pause && cls");
+            break;
+        case 2:
+            // * Player Heal
+            if(inventory[0].amount >= 1)
+            {
+                inventory[0].amount--;
+                playerHealth = playerMaxHealth;
+                printf("Your Health Is Now At Its Max!\n%i\n", playerHealth);
+                system("pause && cls");
+                goto action;
+            }
+            else
+            {
+                printf("You Have No Health Potions!\n");
+                system("pause && cls");
+            }
+            break;
+        case 3:
+            // * Player Run
+            if(!hasPlayerRun)
+            {
+                if(randomNumberGen(8) >= 6)
+                {
+                    printf("You Ran Away!\n");
+                    system("pause && cls");
+                    goto runAway;
+                    break;
+                }
+                else
+                {
+                    printf("You Failed To Run Away!\n");
+                    hasPlayerRun = true;
+                    system("pause && cls");
+                    break;
+                }
+            }
+            else
+            {
+                printf("You Already Tried To Do This And Failed.\n");
+                system("pause && cls");
+                goto action;
+                break;
+            }
+        }
+    }while(enemyHealth > 0);
+    runAway:;
+    // * End of fight
+}
+
+
 // ^ Actual Gameplay
-void gameplay(struct Item inventory)
+void gameplay(struct Item *inventory)
 {
     //* Triggers an encounter + allows me to change the encounter rate
     if(randomNumberGen(11) <= 10)
     {
-        
+        int chance = randomNumberGen(10);
+        switch (chance)
+        {
+        case 1:
+            // & no enemy
+            int goldAmt = randomNumberGen(12);
+            printf("You Got Lucky!\n Although Noises Were Coming From This Room Nothing Is Here\n +%d Gold\n", goldAmt);
+            inventory[4].amount += goldAmt;
+            system("pause && cls");
+            break;
+        case 2:
+            // & Skeleton Encounter
+            break;
+        case 3:
+            // & Wizard Encounter
+            break;
+        case 4:
+            // & Shop Encounter
+            break;
+        case 5:
+            // & Reaper Encounter
+            break;
+        case 6:
+            // & Loot Room Encounter
+            break; 
+        case 7:
+            // & Zombie Encounter
+            break;
+        case 8:
+            // & MiniBoss Encounter
+            break;
+        default:
+            break;
+        }
     }
     // * Player dodges an encounter
     else
@@ -207,14 +378,7 @@ int main()
     // ^ Main game loop
     while(true)
     {
-        // * init the players inventory
-        struct Item inventory[] = {
-            {"Health Potion", 3}, 
-            {"Sword", 0},
-            {"Knife", 0},
-            {"Shield", 0},
-            {"Gold", 10} // ^ Starting Gold Amount
-        };
+        
         system("cls");
         //TODO - add music here
         printf("/-----------------------------\\\n");
