@@ -8,8 +8,8 @@
 #include <windowsx.h>
 #include <mmsystem.h>
 
-#define basePlayerHealth 100
-#define HealthMax 200
+#define basePlayerHealth 120
+#define HealthMax 220
 #define HealthPotCost 5
 #define HealthUpgradeCost 10
 #define SkellyHealth 45
@@ -85,7 +85,7 @@ char* playIntro()
     printf("Phew. Who Would Have Thought A Bullet Wound To That Annoying Pricks Head Would Be So Gross?\nAnyway Now That Your Here Lets Begin.\n");
     system("pause && cls");
     printf("You Really Thought You Could Play A Simple Story?\n");
-    Sleep(2.5);
+    Sleep(2500);
     system("pause && cls");
     //TODO - add audio here
     Sleep(4000);
