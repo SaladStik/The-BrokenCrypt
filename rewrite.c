@@ -237,7 +237,7 @@ void enemyFight(int enemyHealth, int enemyDamageCap, char* enemyName)
             // * Revive function
             if(inventory[0].amount >= 1)
             {
-                printf("You Have %d\n Use 1?\n(Y/N)\n", inventory[0].amount);
+                printf("You Have %d Health Pots\n Use 1 To Revive Yourself?\n(Y/N)\n", inventory[0].amount);
                 char potUse;
                 scanf(" %c", &potUse);
                 if(tolower(potUse) == 'y')
