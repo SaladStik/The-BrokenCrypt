@@ -101,6 +101,49 @@ char* playIntro()
     return name;
 }
 
+void gameStart()
+{
+    printf("Hey %s Wake Up!\n\t\t\n", Name);
+    system("Pause");
+    system("cls");
+    printf("I guess it was all just a dream....");
+    Sleep(1);
+    printf("\nWell since im up I might aswell go get some breakfast.\n");
+    printf("|-------------------------|\n");
+    printf("|  /-/               *  0 | \n");
+    printf("| /-/         ___         |\n");
+    printf("|/-/       [] ' '         |\n");
+    printf("|-------------------------|\n");
+    system("pause");
+    system("cls");
+    printf("*You Walk Downstairs*\n");
+    //TODO - add audio here
+    Sleep(10);
+    system("cls");
+    printf("*You Smell Pancakes*\n");
+    system("Pause");
+    system("cls");
+    printf("Do You Want To Go Get Breakfast?   (Y/N)\n");
+    char Kitchen;
+    scanf(" %c", &Kitchen);
+    // & Illusion of choice
+    if(tolower(Kitchen) == 'y')
+    {
+        system("cls");
+        printf("You Walk To The Kitchen.");
+    }
+    else
+    {
+        system("cls");
+        printf("You Decide To Go Back To Bed.");
+    }
+    printf("\nBut As You Walk You Notice The Floor Boards Creaking.\nWhen Suddenly You Hear A Snap And Begin To Fall\n");
+    system("Pause");
+    system("cls");
+    // TODO implement fall video
+    
+}
+
 
 
 // ^ Main function
@@ -143,11 +186,6 @@ int main()
         {
             case '1': // ^ Start the game
                 char* name = playIntro();
-                inventory[2].amount = 1;
-                for (int i = 0; i < sizeof(inventory) / sizeof(inventory[0]); i++) {
-                    printf("%s: %d\n", inventory[i].name, inventory[i].amount);
-                }
-                printf("Welcome, %s!\n", name); // Display player's name
                 system("pause");
                 break;
             default:
