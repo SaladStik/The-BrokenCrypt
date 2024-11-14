@@ -317,6 +317,158 @@ void enemyFight(int enemyHealth, int enemyDamageCap, char* enemyName)
     // * End of fight
 }
 
+// ! Loot room function
+void lootRoom()
+{
+    system("cls");
+    char prompt[200];
+    int promptType;
+    boolean finished = false;
+    if(inventory[1].amount == 0)
+    {
+        strcpy(prompt, "[1] You Found A Sword\n");
+        promptType = 1;
+        if(inventory[3].amount == 0)
+        {
+            strcpy(prompt, "[1] You Found A Sword\n[2] You Found A Shield\n");
+            promptType = 2;
+        }
+    }
+    else if (inventory[3].amount == 0)
+    {
+        strcpy(prompt, "[1] You Found A Shield\n");
+        promptType = 3;
+    }
+    else
+    {
+        strcpy(prompt, " ");
+    }
+    if(prompt == " ")
+    {
+        printf("You Already Have All The Items You Can Get From A Loot Room So Heres A Health Pot!\n");
+        system("pause && cls");
+        inventory[0].amount++;
+    }
+    else
+    {
+        int healthPotNum;
+        switch (promptType)
+        {
+            case 1:
+                healthPotNum = 2;
+                break;
+            case 2:
+                healthPotNum = 3;
+                break;
+            case 3:
+                healthPotNum = 2;
+                break;
+        }
+        while(!finished)
+        {
+            system("cls");
+            printf("%s\n[%i] You Found A Health Pot\n\nONCE YOU CHOOSE AN ITEM YOU CANNOT COME BACK UNTIL YOU FIND ANOTHER ROOM\n\n",healthPotNum);
+            int choice = scanf(" %d", &choice);
+            system("cls");
+            switch(choice)
+            {
+                case 1:
+                    if(promptType == 1)
+                    {
+                        inventory[1].amount++;
+                        finished = true;
+                    }
+                    else if(promptType == 2)
+                    {
+                        inventory[1].amount++;
+                        finished = true;
+                    }
+                    else
+                    {
+                        inventory[3].amount++;
+                        finished = true;
+                    }
+                    break;
+                case 2:
+                    if(promptType == 2)
+                    {
+                        inventory[3].amount++;
+                        finished = true;
+                    }
+                    else if(promptType == 3)
+                    {
+                        inventory[0].amount++;
+                        finished = true;
+                    }
+                    break;
+                case 3:
+                    if(promptType == 2)
+                    {
+                        inventory[0].amount++;
+                        finished = true;
+                    }
+                    else
+                    {
+                        printf("Invalid Choice\n");
+                        system("pause && cls");
+                    }
+                    break;
+                default:
+                    printf("Invalid Choice\n");
+                    system("pause && cls");
+                    break;
+            }
+        }
+    }
+}
+
+// ! Shop function
+void goShopping()
+{
+    while(true)
+    {
+        system("cls");
+        printf("%iG\n\n[1]Health Pot ------ 10G\n[2]Heart Crystal ------ 30G\n[3] Exit Shop\n\n If You Exit The Shop You Can Not Return\n\n", inventory[4].amount);
+        int choice = scanf(" %d", &choice);
+        switch(choice)
+        {
+            case 1:
+                if(inventory[4].amount >= 10)
+                {
+                    inventory[0].amount++;
+                    inventory[4].amount -= 10;
+                }
+                else
+                {
+                    printf("You Do Not Have Enough Gold!\n");
+                    system("pause && cls");
+                }
+                break;
+            case 2:
+                if(inventory[4].amount >= 30 && playerMaxHealth <= HealthMax)
+                {
+                    printf("+25 Health\nYour New Max Health Is: %i", playerMaxHealth);
+                    playerMaxHealth += 25;
+                    playerHealth = playerMaxHealth;
+                    inventory[4].amount -= 30;
+                }
+                else
+                {
+                    printf("You Do Not Have Enough Gold Or You Are At Max Health!\n");
+                    system("pause && cls");
+                }
+                break;
+            case 3:
+                system("cls");
+                return;
+                break;
+            default:
+                printf("Invalid Choice\n");
+                system("pause && cls");
+                break;
+        }
+    }
+}
 
 // ^ Actual Gameplay
 void gameplay(struct Item *inventory)
@@ -336,24 +488,30 @@ void gameplay(struct Item *inventory)
             break;
         case 2:
             // & Skeleton Encounter
+            enemyFight(SkellyHealth, 15, "Skeleton");
             break;
         case 3:
             // & Wizard Encounter
+            enemyFight(WizardHealth, 20, "Wizard");
             break;
         case 4:
             // & Shop Encounter
             break;
         case 5:
             // & Reaper Encounter
+            enemyFight(ReaperHealth, 25, "Reaper");
             break;
         case 6:
             // & Loot Room Encounter
+            lootRoom();
             break; 
         case 7:
             // & Zombie Encounter
+            enemyFight(ZomboHealth, 10, "Zombie");
             break;
         case 8:
             // & MiniBoss Encounter
+            enemyFight(MiniBossHealth, 30, "MiniBoss");
             break;
         default:
             break;
