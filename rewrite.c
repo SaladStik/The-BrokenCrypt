@@ -30,7 +30,7 @@ struct Item {
 struct Item inventory[] = {
     {"Health Potion", 3}, 
     {"Sword", 0},
-    {"Knife", 0},
+    {"Knife", 1},
     {"Shield", 0},
     {"Gold", 10} // ^ Starting Gold Amount
 };
@@ -685,24 +685,17 @@ void gameplay(struct Item *inventory, FILE *fptr, char* name)
     };
     char* bossName = bossNames[randomNumberGen(20) - 1];
     enemyFight(BossHealth, 88, bossName);
-    if(playerTurns[1].turnNum > playerTurns[2].turnNum && playerTurns[1].turnNum > playerTurns[0].turnNum)
-            {
-                LEnding(name);
-            }
-            else if(playerTurns[2].turnNum > playerTurns[1].turnNum && playerTurns[2].turnNum > playerTurns[0].turnNum)
-            {
-                REnding(name);
-            }
-            else if(playerTurns[0].turnNum > playerTurns[1].turnNum && playerTurns[0].turnNum > playerTurns[1].turnNum)
-            {
-                NoEnding(name);
-            }
-            else if(playerTurns[0].turnNum == playerTurns[1].turnNum && playerTurns[0].turnNum == playerTurns[2].turnNum)
-            {
-                system("cls");
-                printf("You're Lost Forever\n");
-                system("pause && cls");
-            }
+    if (playerTurns[1].turnNum > playerTurns[2].turnNum && playerTurns[1].turnNum > playerTurns[0].turnNum) {
+        LEnding(name);
+    } else if (playerTurns[2].turnNum > playerTurns[1].turnNum && playerTurns[2].turnNum > playerTurns[0].turnNum) {
+        REnding(name);
+    } else if (playerTurns[0].turnNum > playerTurns[1].turnNum && playerTurns[0].turnNum > playerTurns[2].turnNum) {
+        NoEnding(name);
+    } else {
+        system("cls");
+        printf("You're Lost Forever\n");
+        system("pause && cls");
+    }
 }
 
 //& GAME ENDINGS
@@ -787,33 +780,19 @@ int casino()
         int num3 = randomNumberGen(10);
         printf("%i",num3);
 
-        if(num1 == num2 && num2 != num3||num2 == num3 && num3 != num1||num3 == num1 && num1 != num2)
-        {
+        if(num1 == num2 && num2 == num3) {
+            totalGamble *= (num1 == 10) ? 100 : 2;
+            printf("\n%s", (num1 == 10) ? "YOU GOT THE JACKPOT" : "You Got a Match");
+        } else if(num1 == num2 || num2 == num3 || num3 == num1) {
             totalGamble *= 1.5;
-            printf("\nYou Got %i Back\n", totalGamble);
-            system("pause && cls");
-            inventory[4].amount += totalGamble;
-        }
-        else if(num1 == 10 && num2 == 10 && num3 == 10)
-        {
-            totalGamble *= 100;
-            printf("\nYOU GOT THE JACKPOT");
-            printf("\nYou Got %i Back\n", totalGamble);
-            system("pause && cls");
-            inventory[4].amount += totalGamble;
-        }
-        else if(num1 == num2 && num2 == num3)
-        {
-            totalGamble *= 2;
-            printf("\nYou Got %i Back\n", totalGamble);
-            system("pause && cls");
-            inventory[4].amount += totalGamble;
-        }
-        else
-        {
+            printf("\nYou Got a Partial Match");
+        } else {
             printf("Well GoodBye To All That Gold");
-            system("pause && cls");
+            totalGamble = 0;
         }
+        printf("\nYou Got %i Back\n", totalGamble);
+        system("pause && cls");
+        inventory[4].amount += totalGamble;
     }
     return 0;
 }
